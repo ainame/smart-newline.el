@@ -73,7 +73,6 @@
                (smart-newline/open-line-between)
                (smart-newline/increment-open-line))))))
 
-(define-key global-map (kbd "C-m") 'smart-newline)
 (add-hook 'post-command-hook 'smart-newline/post-command-hook)
 
 (provide 'smart-newline)
