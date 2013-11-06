@@ -3,7 +3,7 @@
 ;; Copyright (C) 2013 Satsohi Namai
 
 ;; Author: Satoshi Namai
-;; X-Original-Version: 0.1
+;; Version: 0.1
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -76,3 +76,5 @@
 (add-hook 'post-command-hook 'smart-newline/post-command-hook)
 
 (provide 'smart-newline)
+
+;;; smart-newline.el ends here
