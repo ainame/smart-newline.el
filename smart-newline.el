@@ -51,7 +51,7 @@
   (save-excursion
     (forward-line)
     (indent-according-to-mode)
-    (previous-line)))
+    (forward-line -1)))
 
 ;;;###autoload
 (defun smart-newline ()
