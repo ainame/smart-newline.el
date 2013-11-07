@@ -2,16 +2,12 @@ smart-newline.el
 ================
 
 The `smart-newline.el` provide a stress-less newline command for programmer.
-This usage is very simple. Because, you have to only press `RET` key.
-
-!!! WARNING !!!
-This is prototype version. I will change specification without notice.
-And, this README's description have not implemented yet.
-Please wait little.
+This extension's usage is VERY SIMPLE. Because, you have to ONLY press `RET` key.
 
 ## INSTALL
 
-write in your ~/.emacs.d
+write in your ~/.emacs.d/init.el
+
 ```lisp
 (setq el-get-sources '(
         (:name smart-newline
@@ -26,21 +22,28 @@ after `M-x el-get-list-packages`
 
 ## CONFIGURATION
 
-write in your ~/.emacs.d
+write in your ~/.emacs.d/init.el
 
 * by minor-mode
+
 `smart-newline` command bind to `RET` and `C-m`.
+
+```lisp
+(smart-newline-mode 1)
+```
+
+or
 
 ```lisp
 (add-hook 'ruby-mode-hook ;; or any major-mode-hooks
   (lambda ()
-    (smart-newline-mode 1)))
+  (smart-newline-mode 1)))
 ```
 
 * by only using any key-bind
 
 ```lisp
-(define-key global-map (kbd "C-j") 'smart-newline)
+(define-key global-map (kbd "C-j") 'smart-newline) ;; or any key as you like
 ```
 
 ## BEHAVIORS
@@ -65,8 +68,8 @@ end        ->    |
 
 `newline and indent` when the cursor exists at end of line.
 
-* smart-newline: `RET`
 * default Emacs: `C-j` / `RET` -> `TAB`
+* smart-newline: `RET`
 
 ### pattern 2
 
@@ -78,8 +81,8 @@ end        ->    |
 
 `open-line and indent` at begininng of line which has chars.
 
-* smart-newline: `RET`
 * default Emacs: `C-o` -> `TAB`
+* smart-newline: `RET`
 
 ### pattern 3
 
@@ -95,8 +98,8 @@ object =
 
 `newline and indent` like `C-j`
 
-* smart-newline: `RET`
 * default Emacs: `C-j` / `RET` -> `TAB`
+* smart-newline: `RET`
 
 ### pattern 4
 
@@ -113,8 +116,8 @@ end             def bar
 You can insert balanced blank line around start point by only `RET`.
 At the end, you will write new a method in smooth.
 
-* smart-newline: `RET` -> `RET`
 * default Emacs: `RET` -> `RET` -> `C-p` / `RET` -> `C-o`
+* smart-newline: `RET` -> `RET`
 
 ### pattern 5
 
@@ -128,25 +131,10 @@ end             def bar
                 end
 ```
 
-* smart-newline: `RET`
 * default Emacs: `C-o`
+* smart-newline: `RET`
 
 ### pattern 6
-
-```ruby
-def foo         def foo
-end             end
-|         RET
-          --->  |
-def bar
-end             def bar
-                end
-```
-
-* smart-newline: `RET`
-* default Emacs: `C-o`
-
-### pattern 7
 
 ```ruby
  def foo         def foo        def foo        def foo
@@ -158,10 +146,10 @@ end             def bar
                                                end
 ```
 
-* smart-newline: `RET` -> `RET` -> `RET`
 * default Emacs: `C-o` -> `C-o` -> `RET`
+* smart-newline: `RET` -> `RET` -> `RET`
 
-### pattern 8
+### pattern 7
 
 ```ruby
 def foo         def foo        def foo        def foo
@@ -173,5 +161,5 @@ end             def bar        |              |
                                               end
 ```
 
-* smart-newline: `RET` -> `RET` -> `RET`
 * default Emacs: `RET` -> `RET` -> `C-o`
+* smart-newline: `RET` -> `RET` -> `RET`
