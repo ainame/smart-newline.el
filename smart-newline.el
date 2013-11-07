@@ -29,10 +29,10 @@
 (defvar smart-newline/regexp-visible-chars "[^\\\s\\\n\\\t]")
 
 (defun smart-newline/exist-string-before-cursor-p ()
-  (string-match smart-newline/regexp-visible-chars (buffer-substring (point-at-bol) (point))))
+  (ignore-errors (string-match smart-newline/regexp-visible-chars (buffer-substring (point-at-bol) (point)))))
 
 (defun smart-newline/exist-string-after-cursor-p ()
-  (string-match smart-newline/regexp-visible-chars (buffer-substring (+ (point) 1) (point-at-eol))))
+  (ignore-errors (string-match smart-newline/regexp-visible-chars (buffer-substring (+ (point) 1) (point-at-eol)))))
 
 (defun smart-newline/exist-string-on-line-p ()
   (string-match smart-newline/regexp-visible-chars
@@ -67,6 +67,7 @@
 
 (defun smart-newline/newline-and-indent ()
   (reindent-then-newline-and-indent))
+
 (defun smart-newline/open-line-between ()
   (indent-according-to-mode)
   (open-line 1)
@@ -80,8 +81,8 @@
 (defun smart-newline ()
   "smart-newline is a newline command which designed for programmer."
   (interactive)
-  (let ((exist-string-before-cursor      (smart-newline/exist-string-before-cursor-p))
-        (exist-string-after-cursor       (smart-newline/exist-string-after-cursor-p))
+  (let ((exist-string-before-cursor       (smart-newline/exist-string-before-cursor-p))
+        (exist-string-after-cursor        (smart-newline/exist-string-after-cursor-p))
         (distance-of-not-empty-line-above (smart-newline/search-exists-string-line-distance -1 3))
         (distance-of-not-empty-line-below (smart-newline/search-exists-string-line-distance 1 3)))
     (cond ((/= distance-of-not-empty-line-above distance-of-not-empty-line-below)
@@ -101,12 +102,13 @@
 
 (defvar smart-newline-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-m") 'smart-newline)))
+    (define-key map (kbd "C-m") 'smart-newline)
+    map))
 
 ;;;###autoload
 (define-minor-mode smart-newline-mode
   "smart-newline-mode is a minor-mode for using smart-newline command by default key-map."
-  :lighter " SN" :keymap 'smart-newline-mode-map)
+  :lighter " SN" :keymap smart-newline-mode-map)
 
 (provide 'smart-newline)
 
