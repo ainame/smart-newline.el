@@ -25,27 +25,50 @@
 ;;
 
 ;;; Code:
-(defvar smart-newline/open-line-count 0)
-(make-variable-buffer-local 'smart-newline/open-line-count)
-
 (defvar smart-newline/key-code-of-return 13)
+(defvar smart-newline/regexp-visible-chars "[^\\\s\\\n\\\t]")
 
-(defun smart-newline/increment-open-line ()
-  (setq smart-newline/open-line-count (+ smart-newline/open-line-count 1)))
+(defun smart-newline/exist-string-before-cursor-p ()
+  (string-match smart-newline/regexp-visible-chars (buffer-substring (point-at-bol) (point))))
 
-(defun smart-newline/clear-open-line-count ()
-  (setq smart-newline/open-line-count 0))
+(defun smart-newline/exist-string-after-cursor-p ()
+  (string-match smart-newline/regexp-visible-chars (buffer-substring (+ (point) 1) (point-at-eol))))
 
-(defun smart-newline/post-command-hook ()
-  (if (not (eq last-command-event smart-newline/key-code-of-return))
-      (smart-newline/clear-open-line-count)
-    nil))
+(defun smart-newline/exist-string-on-line-p ()
+  (string-match smart-newline/regexp-visible-chars
+                (buffer-substring (point-at-bol) (point-at-eol))))
+
+(defun smart-newline/exist-string-forward-line-p (num)
+  (save-excursion
+    (forward-line num)
+    (smart-newline/exist-string-on-line-p)))
+
+(defun smart-newline/search-exists-string-line-distance (direction limit)
+  (smart-newline/search-exists-string-line-distance-count direction limit 0))
+
+(defun smart-newline/search-exists-string-line-distance-count (direction limit distance)
+  (let ((delta (cond ((> direction 0) 1) ((< direction 0) -1))))
+    ;; for debug
+    ;; (princ (format "dire: %s limit: %s, distance: %s, -p: %s\n"
+    ;;                direction limit distance (smart-newline/exist-string-forward-line-p distance)))
+    (cond ((or (<= limit 0) (smart-newline/exist-string-forward-line-p (* delta distance))) distance)
+          (t (smart-newline/search-exists-string-line-distance-count direction (- limit 1) (+ distance 1))))))
+
+(defun smart-newline/exist-string-previous-line-of-cursor-p ()
+  (smart-newline/exist-string-forward-line-p -1))
+
+(defun smart-newline/exist-string-next-line-of-cursor-p ()
+  (smart-newline/exist-string-forward-line-p 1))
+
+(defun smart-newline/exist-cursor-on-blank-line-which-be-sandwithed-p ()
+  (and (not (smart-newline/exist-string-on-line-p))
+       (smart-newline/exist-string-previous-line-of-cursor-p)
+       (smart-newline/exist-string-next-line-of-cursor-p)))
 
 (defun smart-newline/newline-and-indent ()
-  (newline)
-  (indent-according-to-mode))
-
+  (reindent-then-newline-and-indent))
 (defun smart-newline/open-line-between ()
+  (indent-according-to-mode)
   (open-line 1)
   (indent-according-to-mode)
   (save-excursion
@@ -55,25 +78,35 @@
 
 ;;;###autoload
 (defun smart-newline ()
-  "newline-or-openline is a new command for merging C-m and C-o"
+  "smart-newline is a newline command which designed for programmer."
   (interactive)
-  (let ((string-exists-before-cursor (string-match "[^\\\s\\\n\\\t]" (buffer-substring (point-at-bol) (point))))
-        (string-exists-after-cursor (string-match "[^\\\s\\\n\\\t]" (buffer-substring (point) (point-at-eol)))))
-    (cond ((or (and (= smart-newline/open-line-count 0)
-                    (eolp))
-               (and (>= smart-newline/open-line-count 2)
-                    (or (not string-exists-after-cursor)
-                        (and string-exists-before-cursor string-exists-after-cursor)))
-               (and (= smart-newline/open-line-count 0)
-                    (and string-exists-before-cursor string-exists-after-cursor)))
-           (progn
-             (smart-newline/newline-and-indent)
-             (smart-newline/clear-open-line-count)))
-          (t (progn
-               (smart-newline/open-line-between)
-               (smart-newline/increment-open-line))))))
+  (let ((exist-string-before-cursor      (smart-newline/exist-string-before-cursor-p))
+        (exist-string-after-cursor       (smart-newline/exist-string-after-cursor-p))
+        (distance-of-not-empty-line-above (smart-newline/search-exists-string-line-distance -1 3))
+        (distance-of-not-empty-line-below (smart-newline/search-exists-string-line-distance 1 3)))
+    (cond ((/= distance-of-not-empty-line-above distance-of-not-empty-line-below)
+           (cond ((> distance-of-not-empty-line-above distance-of-not-empty-line-below)
+                  (smart-newline/open-line-between))
+                 (t
+                  (smart-newline/newline-and-indent))))
+          ((or (and (not exist-string-before-cursor) exist-string-after-cursor)
+               (smart-newline/exist-cursor-on-blank-line-which-be-sandwithed-p))
+           (smart-newline/open-line-between))
+          ((or (eolp)
+               (not exist-string-after-cursor)
+               (and exist-string-before-cursor exist-string-after-cursor))
+           (smart-newline/newline-and-indent))
+          (t
+           (smart-newline/newline-and-indent)))))
 
-(add-hook 'post-command-hook 'smart-newline/post-command-hook)
+(defvar smart-newline-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-m") 'smart-newline)))
+
+;;;###autoload
+(define-minor-mode smart-newline-mode
+  "smart-newline-mode is a minor-mode for using smart-newline command by default key-map."
+  :lighter " SN" :keymap 'smart-newline-mode-map)
 
 (provide 'smart-newline)
 
