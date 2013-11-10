@@ -1,9 +1,9 @@
-;;; smart-newline.el --- Provide smart newline(C-m) which includes open-line(C-o) and newline-and-inden(C-j).
+;;; smart-newline.el --- Provide smart newline(C-m) which includes open-line(C-o) and newline-and-indent(C-j).
 
 ;; Copyright (C) 2013 Satsohi Namai
 
 ;; Author: Satoshi Namai
-;; Version: 0.1
+;; Version: 0.0.1
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;; Provide smart newline(C-m) which includes open-line(C-o) and newline-and-inden(C-j)
+;; Provide smart newline(C-m) which includes open-line(C-o) and newline-and-indent(C-j)
 ;;
 ;;
 
