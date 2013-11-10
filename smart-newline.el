@@ -65,6 +65,20 @@
        (smart-newline/exist-string-previous-line-of-cursor-p)
        (smart-newline/exist-string-next-line-of-cursor-p)))
 
+(defvar smart-newline/closing-of-block-regexp "[\\\s\\\t]*\\\(end\\|};\\\)[\\\s\\\t]*")
+
+(defun smart-newline/get-forward-line-string (num)
+  (save-excursion
+    (forward-line num)
+    (buffer-substring (point-at-bol) (point-at-eol))))
+
+(defun smart-newline/match-like-closing-of-block (string)
+  (string-match smart-newline/closing-of-block-regexp string))
+
+(defun smart-newline/next-line-like-closing-of-block-p ()
+  (smart-newline/match-like-closing-of-block
+   (smart-newline/get-forward-line-string 1)))
+
 (defun smart-newline/newline-and-indent ()
   (reindent-then-newline-and-indent))
 
@@ -84,12 +98,15 @@
   (let ((exist-string-before-cursor       (smart-newline/exist-string-before-cursor-p))
         (exist-string-after-cursor        (smart-newline/exist-string-after-cursor-p))
         (distance-of-not-empty-line-above (smart-newline/search-exists-string-line-distance -1 3))
-        (distance-of-not-empty-line-below (smart-newline/search-exists-string-line-distance 1 3)))
+        (distance-of-not-empty-line-below (smart-newline/search-exists-string-line-distance 1 3))
+        (next-line-like-closing-of-block  (smart-newline/next-line-like-closing-of-block-p)))
     (cond ((/= distance-of-not-empty-line-above distance-of-not-empty-line-below)
            (cond ((> distance-of-not-empty-line-above distance-of-not-empty-line-below)
                   (smart-newline/open-line-between))
                  (t
                   (smart-newline/newline-and-indent))))
+          (next-line-like-closing-of-block
+           (smart-newline/newline-and-indent))
           ((or (and (not exist-string-before-cursor) exist-string-after-cursor)
                (smart-newline/exist-cursor-on-blank-line-which-be-sandwithed-p))
            (smart-newline/open-line-between))
