@@ -65,7 +65,7 @@
        (smart-newline/exist-string-previous-line-of-cursor-p)
        (smart-newline/exist-string-next-line-of-cursor-p)))
 
-(defvar smart-newline/closing-of-block-regexp "[\\\s\\\t]*\\\(end\\|};\\\)[\\\s\\\t]*")
+(defvar smart-newline/closing-of-block-regexp "[\\\s\\\t]*\\\(end\\|};\\|}\\\)[\\\s\\\t]*")
 
 (defun smart-newline/get-forward-line-string (num)
   (save-excursion
