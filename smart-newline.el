@@ -105,7 +105,7 @@
                   (smart-newline/open-line-between))
                  (t
                   (smart-newline/newline-and-indent))))
-          (next-line-like-closing-of-block
+          ((and next-line-like-closing-of-block (not (smart-newline/exist-string-on-line-p)))
            (smart-newline/newline-and-indent))
           ((or (and (not exist-string-before-cursor) exist-string-after-cursor)
                (smart-newline/exist-cursor-on-blank-line-which-be-sandwithed-p))
