@@ -82,13 +82,13 @@ you can declare cursor position by `|` which defined at `cursor-test/cursor-char
     (if result
         t
       (progn
-        (message (if description
+        (princ (if description
                      (format "Fail test: %s" description)
                    "Fail test"))
-        (message (format "[buffer]\n expect: \"%s\"\n actual: \"%s\""
+        (princ (format "[buffer]\n expect: \"%s\"\n actual: \"%s\""
                          (cursor-test/pretty-format-cursor expect)
                          (cursor-test/pretty-format-cursor actual)))
-        (message (format "[position] expect: (%d, %d), actual: (%d, %d)"
+        (princ (format "[position] expect: (%d, %d), actual: (%d, %d)"
                          (car expect-pos) (cadr expect-pos) (car actual-pos) (cadr actual-pos)))
         nil))))
 
