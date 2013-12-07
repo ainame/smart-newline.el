@@ -44,17 +44,17 @@
     (forward-line num)
     (smart-newline/exist-string-on-line-p)))
 
-(defun smart-newline/search-exists-string-line-distance (direction limit)
-  (smart-newline/search-exists-string-line-distance-count direction limit 0))
+(defun smart-newline/search-exist-string-line-distance (direction limit)
+  (smart-newline/search-exist-string-line-distance-count direction limit 0))
 
-(defun smart-newline/search-exists-string-line-distance-count (direction limit distance)
+(defun smart-newline/search-exist-string-line-distance-count (direction limit distance)
   (let ((delta (cond ((> direction 0) 1) ((< direction 0) -1))))
     ;;for debug
     (if smart-newline/debug
         (princ (format "dire: %s limit: %s, distance: %s, -p: %s\n"
                    direction limit distance (smart-newline/exist-string-forward-line-p distance))))
     (cond ((or (<= limit 0) (smart-newline/exist-string-forward-line-p (* delta distance))) distance)
-          (t (smart-newline/search-exists-string-line-distance-count direction (- limit 1) (+ distance 1))))))
+          (t (smart-newline/search-exist-string-line-distance-count direction (- limit 1) (+ distance 1))))))
 
 (defun smart-newline/exist-string-previous-line-of-cursor-p ()
   (smart-newline/exist-string-forward-line-p -1))
@@ -103,8 +103,8 @@
   (interactive)
   (let ((exist-string-before-cursor       (smart-newline/exist-string-before-cursor-p))
         (exist-string-after-cursor        (smart-newline/exist-string-after-cursor-p))
-        (distance-of-not-empty-line-above (smart-newline/search-exists-string-line-distance -1 3))
-        (distance-of-not-empty-line-below (smart-newline/search-exists-string-line-distance 1 3))
+        (distance-of-not-empty-line-above (smart-newline/search-exist-string-line-distance -1 3))
+        (distance-of-not-empty-line-below (smart-newline/search-exist-string-line-distance 1 3))
         (next-line-like-closing-of-block  (smart-newline/next-line-like-closing-of-block-p)))
     (cond ((/= distance-of-not-empty-line-above distance-of-not-empty-line-below)
            (cond ((> distance-of-not-empty-line-above distance-of-not-empty-line-below)
