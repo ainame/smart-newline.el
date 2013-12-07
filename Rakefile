@@ -21,7 +21,12 @@ task :compile do
   compile_elisp 'smart-newline.el'
 end
 
-task :test do
-  test_files = Dir["test/*.el"].join(" -l ")
+task :test, :file
+task :test  do |task, args|
+  test_files = unless args.file
+                 Dir["test/*.el"].join(" -l ")
+               else
+                 args.file
+               end
   execute "emacs -batch -Q -L . -L test -l vendor/cursor-test.el -l test/test-helper.el -l #{test_files} -f ert-run-tests-batch-and-exit"
 end
