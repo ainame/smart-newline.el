@@ -25,6 +25,7 @@
 ;;
 
 ;;; Code:
+(defvar smart-newline/debug nil)
 (defvar smart-newline/key-code-of-return 13)
 (defvar smart-newline/regexp-visible-chars "[^\\\s\\\n\\\t]")
 
@@ -48,9 +49,10 @@
 
 (defun smart-newline/search-exists-string-line-distance-count (direction limit distance)
   (let ((delta (cond ((> direction 0) 1) ((< direction 0) -1))))
-    ;; for debug
-    ;; (princ (format "dire: %s limit: %s, distance: %s, -p: %s\n"
-    ;;                direction limit distance (smart-newline/exist-string-forward-line-p distance)))
+    ;;for debug
+    (if smart-newline/debug
+        (princ (format "dire: %s limit: %s, distance: %s, -p: %s\n"
+                   direction limit distance (smart-newline/exist-string-forward-line-p distance))))
     (cond ((or (<= limit 0) (smart-newline/exist-string-forward-line-p (* delta distance))) distance)
           (t (smart-newline/search-exists-string-line-distance-count direction (- limit 1) (+ distance 1))))))
 
@@ -60,7 +62,7 @@
 (defun smart-newline/exist-string-next-line-of-cursor-p ()
   (smart-newline/exist-string-forward-line-p 1))
 
-(defun smart-newline/exist-cursor-on-blank-line-which-be-sandwithed-p ()
+(defun smart-newline/exist-cursor-on-blank-line-which-be-sandwitched-p ()
   (and (not (smart-newline/exist-string-on-line-p))
        (smart-newline/exist-string-previous-line-of-cursor-p)
        (smart-newline/exist-string-next-line-of-cursor-p)))
@@ -79,10 +81,14 @@
   (smart-newline/match-like-closing-of-block
    (smart-newline/get-forward-line-string 1)))
 
-(defun smart-newline/newline-and-indent ()
+(defun smart-newline/newline-and-indent (pattern-name)
+  (if smart-newline/debug
+      (princ (format "[newline-and-indent] pattern: %s\n" pattern-name)))
   (reindent-then-newline-and-indent))
 
-(defun smart-newline/open-line-between ()
+(defun smart-newline/open-line-between (pattern-name)
+  (if smart-newline/debug
+      (princ (format "[open-line-between] pattern: %s\n" pattern-name)))
   (indent-according-to-mode)
   (open-line 1)
   (indent-according-to-mode)
@@ -102,20 +108,20 @@
         (next-line-like-closing-of-block  (smart-newline/next-line-like-closing-of-block-p)))
     (cond ((/= distance-of-not-empty-line-above distance-of-not-empty-line-below)
            (cond ((> distance-of-not-empty-line-above distance-of-not-empty-line-below)
-                  (smart-newline/open-line-between))
+                  (smart-newline/open-line-between "create blank first"))
                  (t
-                  (smart-newline/newline-and-indent))))
+                  (smart-newline/newline-and-indent "create blank second"))))
           ((and next-line-like-closing-of-block (not (smart-newline/exist-string-on-line-p)))
-           (smart-newline/newline-and-indent))
+           (smart-newline/newline-and-indent "end of block"))
           ((or (and (not exist-string-before-cursor) exist-string-after-cursor)
-               (smart-newline/exist-cursor-on-blank-line-which-be-sandwithed-p))
-           (smart-newline/open-line-between))
+               (smart-newline/exist-cursor-on-blank-line-which-be-sandwitched-p))
+           (smart-newline/open-line-between "sandwitch case or before close tag"))
           ((or (eolp)
                (not exist-string-after-cursor)
                (and exist-string-before-cursor exist-string-after-cursor))
-           (smart-newline/newline-and-indent))
+           (smart-newline/newline-and-indent "normal break line"))
           (t
-           (smart-newline/newline-and-indent)))))
+           (smart-newline/newline-and-indent "default")))))
 
 (defvar smart-newline-mode-map
   (let ((map (make-sparse-keymap)))
