@@ -1,4 +1,4 @@
-;;; smart-newline.el --- Provide smart newline(C-m) which includes open-line(C-o) and newline-and-indent(C-j).
+;;; smart-newline.el --- Provide smart newline for one keybind.
 
 ;; Copyright (C) 2013 Satsohi Namai
 
