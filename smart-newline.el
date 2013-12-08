@@ -50,9 +50,9 @@
 (defun smart-newline/search-exist-string-line-distance-count (direction limit distance)
   (let ((delta (cond ((> direction 0) 1) ((< direction 0) -1))))
     ;;for debug
-    (if smart-newline/debug
-        (princ (format "dire: %s limit: %s, distance: %s, -p: %s\n"
-                   direction limit distance (smart-newline/exist-string-forward-line-p distance))))
+    ;; (if smart-newline/debug
+    ;;     (princ (format "dire: %s limit: %s, distance: %s, -p: %s\n"
+    ;;                direction limit distance (smart-newline/exist-string-forward-line-p distance))))
     (cond ((or (<= limit 0) (smart-newline/exist-string-forward-line-p (* delta distance))) distance)
           (t (smart-newline/search-exist-string-line-distance-count direction (- limit 1) (+ distance 1))))))
 
