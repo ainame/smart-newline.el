@@ -33,7 +33,7 @@
   (ignore-errors (string-match smart-newline/regexp-visible-chars (buffer-substring (point-at-bol) (point)))))
 
 (defun smart-newline/exist-string-after-cursor-p ()
-  (ignore-errors (string-match smart-newline/regexp-visible-chars (buffer-substring (+ (point) 1) (point-at-eol)))))
+  (ignore-errors (string-match smart-newline/regexp-visible-chars (buffer-substring (point) (point-at-eol)))))
 
 (defun smart-newline/exist-string-on-line-p ()
   (string-match smart-newline/regexp-visible-chars
