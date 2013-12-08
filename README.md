@@ -58,6 +58,8 @@ In this section, I use following words.
 
 And in these sample figures, `|`  representation editor's cursor.
 
+In this description, display in ruby-mode patterns for exampl.
+You can see some patterns in other major-mode in [test cases](https://github.com/ainame/smart-newline.el/tree/master/test) .
 ### pattern 1
 
 ```ruby
