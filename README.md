@@ -1,6 +1,8 @@
 smart-newline.el
 ================
 
+[![Build Status](https://travis-ci.org/ainame/smart-newline.el.png?branch=master)](https://travis-ci.org/ainame/smart-newline.el)
+
 The `smart-newline.el` provide a stress-less newline command for programmer.
 This extension's usage is VERY SIMPLE. Because, you have to ONLY press `RET` key.
 
