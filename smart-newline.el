@@ -87,15 +87,22 @@
       (princ (format "[newline-and-indent] pattern: %s\n" pattern-name)))
   (reindent-then-newline-and-indent))
 
+(defun smart-newline/insert-smart-open-line (num)
+  (save-excursion
+    (newline num)))
+
 (defun smart-newline/open-line-between (pattern-name)
   (if smart-newline/debug
       (princ (format "[open-line-between] pattern: %s\n" pattern-name)))
-  (indent-according-to-mode)
-  (open-line 1)
+  (smart-newline/insert-smart-open-line 1)
   (indent-according-to-mode)
   (save-excursion
     (forward-line)
-    (indent-according-to-mode)
+    (if (or (not (and (smart-newline/exist-string-before-cursor-p) (smart-newline/exist-string-after-cursor-p)))
+            (not (bolp))
+            (not (eolp)))
+        (indent-according-to-mode)
+      t)
     (forward-line -1)))
 
 ;;;###autoload

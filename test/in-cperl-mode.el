@@ -7,9 +7,13 @@
   (setq cperl-close-paren-offset -4)
   (setq cperl-continued-statement-offset 4)
   (setq cperl-indent-level 4)
+  (setq indent-tabs-mode nil)
   (setq cperl-indent-parens-as-block t)
   (setq cperl-tab-always-indent t)
-  (setq cperl-auto-newline nil))
+  (setq cperl-auto-newline nil)
+  (setq cperl-electric-keywords nil)
+  (setq cperl-electric-parens nil)
+  (setq cperl-electric-lbrace-space nil))
 
 (defun insert-newline-once-in-cperl-mode ()
   (cperl-mode-setting)
@@ -19,6 +23,11 @@
   (cperl-mode-setting)
   (smart-newline)
   (smart-newline))
+
+(defun insert-newline-once-and-down-cursor-in-cperl-mode ()
+  (cperl-mode-setting)
+  (smart-newline)
+  (next-line))
 
 (defun insert-newline-triple-in-cperl-mode ()
   (cperl-mode-setting)
